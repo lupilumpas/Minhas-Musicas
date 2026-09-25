@@ -880,6 +880,41 @@ def download_song(song, temp_dir):
 
     return mp3_files[0]
 
+def update_cache_version():
+    index_path = PROJECT_PATH / "index.html"
+
+    if not index_path.exists():
+        fail("O arquivo index.html não foi encontrado.")
+
+    content = index_path.read_text(encoding="utf-8-sig")
+
+    # Aumenta a versão automaticamente
+    pattern = r'(<script\s+src=["\']script\.js\?v=)(\d+)(["\'])'
+
+    match = re.search(pattern, content)
+
+    if match:
+        version = int(match.group(2)) + 1
+        new_content = re.sub(
+            pattern,
+            rf'\g<1>{version}\g<3>',
+            content,
+            count=1
+        )
+    else:
+        new_content = re.sub(
+            r'(<script\s+src=["\']script\.js)(["\'])',
+            r'\g<1>?v=1\g<2>',
+            content,
+            count=1
+        )
+
+    if new_content != content:
+        index_path.write_text(
+            new_content,
+            encoding="utf-8"
+        )
+
 
 # ============================================================
 # SINCRONIZAÇÃO
@@ -1091,9 +1126,13 @@ def perform_sync():
                 "do script.js."
             )
 
-        print()
-        print("script.js atualizado.")
-        print()
+print()
+print("script.js atualizado.")
+
+update_cache_version()
+
+print("Cache do script.js atualizado.")
+print()
 
         # ----------------------------------------------------
         # ATUALIZAR IDS
