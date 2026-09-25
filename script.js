@@ -1,13 +1,13 @@
 const titles = [
-"01 - David Guetta - Titanium (Lyrics) ft. Sia",
-"02 - Maroon 5 - Animals (Lyrics)",
-"03 - Aaron Smith - Dancin (KRONO Remix) - Lyrics",
-"04 - Tears for Fears - Everybody Wants To Rule The World ｜ Tear for Fears ft. Dafuq!？Boom! ｜",
-"05 - Blinding Lights",
-"06 - Rod Stewart - Young Turks (Official HD Remaster)",
-"07 - Thunderstruck",
-"08 - Teddy Swims - The Door (Official Music Video)",
-"09 - Lighthouse Family - Lovin' Every Minute (Official Music Video)",
+"David Guetta - Titanium (Lyrics) ft. Sia",
+"Maroon 5 - Animals (Lyrics)",
+"Aaron Smith - Dancin (KRONO Remix) - Lyrics",
+" Tears for Fears - Everybody Wants To Rule The World ｜ Tear for Fears ft. Dafuq!？Boom! ｜",
+"Blinding Lights",
+"Rod Stewart - Young Turks (Official HD Remaster)",
+"Thunderstruck",
+"Teddy Swims - The Door (Official Music Video)",
+"Lighthouse Family - Lovin' Every Minute (Official Music Video)",
 "10 - Michael Jackson - Billie Jean (Official Video)",
 "11 - Michael Jackson - Bad (Shortened Version)",
 "12 - Michael Jackson - Smooth Criminal (Official Video - Shortened Version)",
@@ -121,9 +121,9 @@ const titles = [
 ];
 
 const audio = document.getElementById("audio");
+audio.volume = 1;
 const playBtn = document.getElementById("play");
 const progress = document.getElementById("progress");
-const volume = document.getElementById("volume");
 const title = document.getElementById("music-title");
 const currentTime = document.getElementById("current-time");
 const duration = document.getElementById("duration");
@@ -132,7 +132,7 @@ const shuffleBtn = document.getElementById("shuffle");
 const repeatBtn = document.getElementById("repeat");
 
 let current = 0;
-let shuffle = false;
+let shuffle = true;
 let repeat = false;
 let playedSongs = [];
 
@@ -227,6 +227,20 @@ playBtn.addEventListener("click", playPause);
 document.getElementById("next").addEventListener("click", nextSong);
 document.getElementById("prev").addEventListener("click", previousSong);
 
+document.addEventListener("keydown", (event) => {
+  if (event.key === "MediaTrackNext") {
+    nextSong();
+  }
+
+  if (event.key === "MediaTrackPrevious") {
+    previousSong();
+  }
+
+  if (event.key === "MediaPlayPause") {
+    playPause();
+  }
+});
+
 audio.addEventListener("play", () => playBtn.textContent = "⏸");
 audio.addEventListener("pause", () => playBtn.textContent = "▶");
 
@@ -241,10 +255,6 @@ audio.addEventListener("timeupdate", () => {
 
 progress.addEventListener("input", () => {
   if (audio.duration) audio.currentTime = (progress.value / 100) * audio.duration;
-});
-
-volume.addEventListener("input", () => {
-  audio.volume = Number(volume.value);
 });
 
 audio.addEventListener("ended", () => {
