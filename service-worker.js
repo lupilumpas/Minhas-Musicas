@@ -1,4 +1,4 @@
-const CACHE_NAME = "meu-player-v1";
+const CACHE_NAME = "meu-player-v2";
 
 const FILES_TO_CACHE = [
   "./",
@@ -10,8 +10,52 @@ const FILES_TO_CACHE = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(async cache => {
+
+      // Arquivos principais
+      await cache.addAll([
+        "./",
+        "./index.html",
+        "./style.css",
+        "./script.js",
+        "./manifest.json"
+      ]);
+
+      // Lê o script.js
+      const response = await fetch("./script.js");
+      const script = await response.text();
+
+      // Encontra o conteúdo de const titles = [...]
+      const match = script.match(/const\s+titles\s*=\s*\[([\s\S]*?)\]/);
+
+      if (!match) {
+        throw new Error("Não foi possível encontrar a variável titles no script.js");
+      }
+
+      // Extrai todos os títulos entre aspas
+      const titles = [];
+      const regex = /"((?:\\.|[^"\\])*)"/g;
+
+      let item;
+
+      while ((item = regex.exec(match[1])) !== null) {
+        titles.push(JSON.parse(`"${item[1]}"`));
+      }
+
+      console.log(`Encontradas ${titles.length} músicas.`);
+
+      // Monta os caminhos dos MP3s
+      const musicas = titles.map(title =>
+        `./Musicas/${encodeURIComponent(title)}.mp3`
+      );
+
+      // Coloca TODAS as músicas no cache
+      await cache.addAll(musicas);
+
+      console.log(`Cacheadas ${musicas.length} músicas.`);
+    })
   );
+
   self.skipWaiting();
 });
 
