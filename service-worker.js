@@ -29,21 +29,38 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-return cached || fetch(event.request).then(response => {
+  if (event.request.url.includes("script.js")) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const copy = response.clone();
 
-  if (response.status === 200) {
-    const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, copy);
+          });
 
-    caches.open(CACHE_NAME).then(cache => {
-      cache.put(event.request, copy);
-    });
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+
+    return;
   }
 
-  return response;
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request).then(response => {
 
-});
+        if (response.status === 200) {
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, copy);
+          });
+        }
+
+        return response;
+      });
     }).catch(() => caches.match("./index.html"))
   );
 });
