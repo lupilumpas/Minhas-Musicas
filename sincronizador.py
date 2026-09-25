@@ -1126,13 +1126,13 @@ def perform_sync():
                 "do script.js."
             )
 
-print()
-print("script.js atualizado.")
+        print()
+        print("script.js atualizado.")
 
-update_cache_version()
+        update_cache_version()
 
-print("Cache do script.js atualizado.")
-print()
+        print("Cache do script.js atualizado.")
+        print()
 
         # ----------------------------------------------------
         # ATUALIZAR IDS
@@ -1302,6 +1302,7 @@ def main():
         print()
         print(str(exc))
         print()
+        input("Pressione ENTER para fechar...")
         sys.exit(1)
 
 
