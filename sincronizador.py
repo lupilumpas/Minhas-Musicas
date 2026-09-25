@@ -52,6 +52,7 @@ def fail(message):
     print("[ERRO]")
     print(message)
     print()
+    input("Pressione ENTER para fechar...")
     sys.exit(1)
 
 
@@ -186,14 +187,15 @@ def remove_number_prefix(title):
         01 -
         1 -
         119 -
-
+        103 - 01 -
+        etc.
     do começo do título.
     """
 
     title = title.strip()
 
     return re.sub(
-        r"^\s*\d+\s*-\s*",
+        r"^\s*(?:\d+\s*-\s*)+",
         "",
         title
     ).strip()
