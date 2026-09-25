@@ -118,7 +118,6 @@ const titles = [
 "117 - 15 - Rhythm Splice",
 "118 - 16 - Note Fusion",
 "119 - 17 - Track Twine",
-"120 - AMONG US SONG (Ambush) LYRIC VIDEO - DAGames",
 ];
 
 const audio = document.getElementById("audio");
